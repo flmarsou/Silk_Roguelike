@@ -1,0 +1,4 @@
+[*.cs]
+dotnet_diagnostic.IDE0028.severity = none	# Collection initialization can be simplified
+dotnet_diagnostic.IDE0090.severity = none	# 'new' expression can be simplified
+dotnet_diagnostic.CA1050.severity = none	# Declare types in namespaces
