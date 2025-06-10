@@ -1,0 +1,54 @@
+public partial class	Dungeon
+{
+	// Settings
+	private static readonly int					_mapSize = 40;
+	private static readonly (int min, int max)	_roomSize = (4, 10);
+	private static readonly int					_roomAttempts = 10;
+	private static readonly int					_roomPadding = 1;
+
+	private readonly static Random	_rng = new Random();
+
+	public static Tile[,]	GenerateDungeon()
+	{
+		Tile[,]	map = new Tile[_mapSize, _mapSize];
+
+		List<Room>	rooms = GenerateRooms(map);
+
+		return map;
+	}
+
+	private static List<Room>	GenerateRooms(Tile[,] map)
+	{
+		List<Room>	rooms = new List<Room>();
+
+		for (int i = 0; i < _roomAttempts; i++)
+		{
+			// Create a randomly-sized rectangle room
+			int	roomWidth = _rng.Next(_roomSize.min, _roomSize.max);
+			int	roomHeight = _rng.Next(_roomSize.min, _roomSize.max);
+			int	posX = _rng.Next(0, _mapSize - roomWidth);
+			int	posY = _rng.Next(0, _mapSize - roomHeight);
+
+			Room	newRoom = new Room(posX, posY, roomWidth, roomHeight);
+
+			// Checks if `newRoom` doesn't overlap with another room
+			bool	overlap = false;
+			foreach (Room room in rooms)
+			{
+				if (newRoom.Overlap(room, _roomPadding))
+				{
+					overlap = true;
+					break ;
+				}
+			}
+			if (overlap)
+				continue ;
+
+			// Add `newRoom` into the map and the list
+			AddRoom(map, newRoom);
+			rooms.Add(newRoom);
+		}
+
+		return rooms;
+	}
+}
