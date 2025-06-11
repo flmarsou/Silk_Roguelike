@@ -1,9 +1,11 @@
+using Microsoft.VisualBasic;
+
 public partial class	Dungeon
 {
 	// Settings
-	private static readonly int					_mapSize = 40;
-	private static readonly (int min, int max)	_roomSize = (4, 10);
-	private static readonly int					_roomAttempts = 10;
+	private static readonly int					_mapSize = 41;
+	private static readonly (int min, int max)	_roomSize = (4, 14);
+	private static readonly int					_roomAttempts = 0;
 	private static readonly int					_roomPadding = 1;
 
 	private readonly static Random	_rng = new Random();
@@ -12,9 +14,14 @@ public partial class	Dungeon
 	{
 		Tile[,]	map = new Tile[_mapSize, _mapSize];
 
-		List<Room>	rooms = GenerateRooms(map);
+		for (int y = 0; y < map.GetLength(0); y++)
+			for (int x = 0; x < map.GetLength(1); x++)
+				map[y, x] = Tile.Empty;
 
-		return map;
+		List<Room>	rooms = GenerateRooms(map);
+		GenerateMaze(map, rooms);
+
+		return (map);
 	}
 
 	private static List<Room>	GenerateRooms(Tile[,] map)
@@ -49,6 +56,12 @@ public partial class	Dungeon
 			rooms.Add(newRoom);
 		}
 
-		return rooms;
+		return (rooms);
+	}
+
+	private static void	GenerateMaze(Tile[,] map, List<Room> rooms)
+	{
+		List<(int, int, bool)>	frontiers = AddFrontiers(map, rooms);
+		ConnectFrontiers(map, frontiers);
 	}
 }
