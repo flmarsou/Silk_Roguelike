@@ -19,6 +19,9 @@
 					case (Tile.Floor):
 						Console.Write(". ");
 						break ;
+					case (Tile.Test):
+						Console.Write("F ");
+						break ;
 					default:
 						Console.Write("? ");
 						break ;
