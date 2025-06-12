@@ -1,56 +1,56 @@
 public partial class	Dungeon
 {
-	private static List<(int, int, bool)>	AddFrontiers(Tile[,] map, List<Room> rooms)
+	private static readonly int[][]	_directions = [[-2, 0], [0, 2], [2, 0], [0, -2]];
+
+	/// <summary>
+	/// Returns the first available `Empty` tile located at odd coordinates. Returns (-1, -1) if none are available.
+	/// </summary>
+	private static (int y, int x)	StartingFrontier(Tile[,] map)
 	{
-		List<(int, int, bool)>	frontiers = new List<(int, int, bool)>(); 
+		for (int y = 1; y < map.GetLength(0); y += 2)
+			for (int x = 1; x < map.GetLength(1); x += 2)
+				if (map[y, x] == Tile.Empty)
+					return (y, x);
 
-		int	fx = 0;
-		int	fy = 0;
-
-		for (int y = 1; y < map.GetLength(0) - 1; y += 2)
-		{
-			for (int x = 1; x < map.GetLength(1) - 1; x += 2)
-			{
-				bool	overlap = false;
-
-				foreach (Room room in rooms)
-				{
-					if (x >= room.X && x < room.Width && y >= room.Y && y < room.Height)
-						overlap = true;
-				}
-
-				if (overlap)
-					continue ;
-
-				frontiers.Add((fy, fx, false));
-				map[y, x] = Tile.Test;
-				fx++;
-			}
-			fy++;
-		}
-
-		return (frontiers);
+		return (-1, -1);
 	}
 
-	private static void	ConnectFrontiers(Tile[,] map, List<(int, int, bool)> frontiers)
+	/// <summary>
+	/// Adds all valid neighboring `Empty Tiles` offset by 2 in each direction from (x, y) to the frontier list.
+	/// </summary>
+	private static void	AddFrontiers(Tile[,] map, List<(int y, int x)> frontiers, int x, int y)
 	{
-		(int y, int x, bool connected)	startingPoint = frontiers[0];
-
-		int	roll = _rng.Next(5);
-		switch (roll)
+		foreach (int[] dir in _directions)
 		{
-			case (0):
+			int	ny = y + dir[0];
+			int	nx = x + dir[1];
 
-				break ;
-			case (1):
-
-				break ;
-			case (2):
-
-				break ;
-			case (3):
-
-				break ;
+			if (nx > 0 && nx < map.GetLength(1)		// Check X bounds
+				&& ny > 0 && ny < map.GetLength(0)	// Check Y bounds
+				&& map[ny, nx] == Tile.Empty		// Check if tile is Empty
+				&& !frontiers.Contains((ny, nx)))	// Check if tile isn't occupied
+			frontiers.Add((ny, nx));
 		}
+	}
+
+	/// <summary>
+	/// Returns a list of neighboring `Tunnel Tiles` offset by 2 in each cardinal direction from (x, y).
+	/// </summary>
+	private static List<(int y, int x)>	GetNeighbors(Tile[,] map, int x, int y)
+	{
+		List<(int y, int x)>	neighbors = new List<(int y, int x)>();
+
+		foreach (int[] dir in _directions)
+		{
+			int	ny = y + dir[0];
+			int	nx = x + dir[1];
+
+			if (nx > 0 && nx < map.GetLength(1)		// Check X bounds
+				&& ny > 0 && ny < map.GetLength(0)	// Check Y bounds
+				&& map[ny, nx] == Tile.Tunnel)		// Check if tile is Tunnel
+			neighbors.Add((ny, nx));
+		}
+
+		return (neighbors);
 	}
 }
