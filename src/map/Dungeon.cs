@@ -3,23 +3,24 @@ using Microsoft.VisualBasic;
 public partial class	Dungeon
 {
 	// Settings
-	private static readonly int					_mapSize = 41;
+	private static readonly int					_mapWidth = 41;
+	private static readonly int					_mapLength = 41;
 	private static readonly (int min, int max)	_roomSize = (4, 14);
-	private static readonly int					_roomAttempts = 0;
+	private static readonly int					_roomAttempts = 1000;
 	private static readonly int					_roomPadding = 1;
 
 	private readonly static Random	_rng = new Random();
 
 	public static Tile[,]	GenerateDungeon()
 	{
-		Tile[,]	map = new Tile[_mapSize, _mapSize];
+		Tile[,]	map = new Tile[_mapLength, _mapWidth];
 
 		for (int y = 0; y < map.GetLength(0); y++)
 			for (int x = 0; x < map.GetLength(1); x++)
 				map[y, x] = Tile.Empty;
 
-		List<Room>	rooms = GenerateRooms(map);
-		GenerateMaze(map, rooms);
+		GenerateRooms(map);
+		GenerateMaze(map);
 
 		return (map);
 	}
@@ -30,15 +31,15 @@ public partial class	Dungeon
 
 		for (int i = 0; i < _roomAttempts; i++)
 		{
-			// Create a randomly-sized rectangle room
+			// 1. Create a randomly-sized rectangle room
 			int	roomWidth = _rng.Next(_roomSize.min, _roomSize.max);
 			int	roomHeight = _rng.Next(_roomSize.min, _roomSize.max);
-			int	posX = _rng.Next(0, _mapSize - roomWidth);
-			int	posY = _rng.Next(0, _mapSize - roomHeight);
+			int	posX = _rng.Next(0, _mapWidth - roomWidth);
+			int	posY = _rng.Next(0, _mapLength - roomHeight);
 
 			Room	newRoom = new Room(posX, posY, roomWidth, roomHeight);
 
-			// Checks if `newRoom` doesn't overlap with another room
+			// 2. Checks if `newRoom` doesn't overlap with another room
 			bool	overlap = false;
 			foreach (Room room in rooms)
 			{
@@ -51,7 +52,7 @@ public partial class	Dungeon
 			if (overlap)
 				continue ;
 
-			// Add `newRoom` into the map and the list
+			// 3. Add `newRoom` into the map and the list
 			AddRoom(map, newRoom);
 			rooms.Add(newRoom);
 		}
