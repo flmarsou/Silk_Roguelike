@@ -27,10 +27,10 @@ public partial class	Dungeon
 		{
 			for (int x = room.X; x < room.Width; x++)
 			{
-				// Place [Wall Tiles] on the edges of the room
+				// Place `Wall Tiles` on the edges of the room
 				if (y == room.Y || y == room.Height - 1 || x == room.X || x == room.Width - 1)
 					map[y, x] = Tile.Wall;
-				// Place [Floor Tiles] on the inside of the room
+				// Place `Floor Tiles` on the inside of the room
 				else
 					map[y, x] = Tile.Floor;
 			}
