@@ -59,9 +59,42 @@ public partial class	Dungeon
 		return (rooms);
 	}
 
-	private static void	GenerateMaze(Tile[,] map, List<Room> rooms)
+	private static void	GenerateMaze(Tile[,] map)
 	{
-		List<(int, int, bool)>	frontiers = AddFrontiers(map, rooms);
-		ConnectFrontiers(map, frontiers);
+		List<(int y, int x)>	frontiers = new List<(int y, int x)>();
+
+		while (true)
+		{
+			// Get an available tile for starting frontier, stop when none are present anymore
+			(int y, int x) = StartingFrontier(map);
+
+			if (y == -1 || x == -1)
+				break ;
+
+			map[y, x] = Tile.Tunnel;
+			AddFrontiers(map, frontiers, x, y);
+
+			while (frontiers.Count > 0)
+			{
+				// 1. Select, store, and delete a random frontier point
+				int	roll = _rng.Next(frontiers.Count);
+				(int fy, int fx) = frontiers[roll];
+				frontiers.RemoveAt(roll);
+
+				// 2. Store all the neighboring frontiers
+				List<(int ny, int nx)>	neighbors = GetNeighbors(map, fx, fy);
+				if (neighbors.Count == 0)
+					continue ;
+
+				// 3. Get a random neighbor
+				(int ny, int nx) = neighbors[_rng.Next(neighbors.Count)];
+
+				// 4. Create the path between the frontier and its neighbor
+				map[fy, fx] = Tile.Tunnel;
+				map[(fy + ny) / 2, (fx + nx) / 2] = Tile.Tunnel;
+
+				AddFrontiers(map, frontiers, fx, fy);
+			}
+		}
 	}
 }
