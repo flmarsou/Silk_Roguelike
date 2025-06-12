@@ -1,4 +1,3 @@
-
 public partial class	Dungeon
 {
 	// Settings
