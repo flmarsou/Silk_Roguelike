@@ -17,10 +17,10 @@
 						Console.Write("# ");
 						break ;
 					case (Tile.Floor):
-						Console.Write(". ");
+						Console.Write("  ");
 						break ;
-					case (Tile.Test):
-						Console.Write("F ");
+					case (Tile.Tunnel):
+						Console.Write(". ");
 						break ;
 					default:
 						Console.Write("? ");
