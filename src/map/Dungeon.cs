@@ -17,8 +17,8 @@ public partial class	Dungeon
 			for (int x = 0; x < map.GetLength(1); x++)
 				map[y, x] = Tile.Empty;
 
-		GenerateRooms(map);
-		GenerateMaze(map);
+		List<Room>	rooms = GenerateRooms(map);
+		ConnectRooms(map, rooms);
 
 		return (map);
 	}
@@ -58,42 +58,63 @@ public partial class	Dungeon
 		return (rooms);
 	}
 
-	private static void	GenerateMaze(Tile[,] map)
+	private static void	ConnectRooms(Tile[,] map, List<Room> rooms)
 	{
-		List<(int y, int x)>	frontiers = new List<(int y, int x)>();
+		List<(int y, int x)>	centers = new List<(int y, int x)>();
+		HashSet<int>			connected = new HashSet<int> { 0 };
 
-		while (true)
+		// Store the center point (y, x) of each room
+		for (int i = 0; i < rooms.Count; i++)
+			centers.Add(rooms[i].Center);
+
+		while (connected.Count < centers.Count)
 		{
-			// Get an available tile for starting frontier, stop when none are present anymore
-			(int y, int x) = StartingFrontier(map);
+			int	bestTo = -1;				// Index of the closest unconnected room
+			int	bestFrom = -1;				// Index of the closest connected room
+			int	bestDist = int.MaxValue;	// Min distance between `bestTo` and `bestFrom`
 
-			if (y == -1 || x == -1)
-				break ;
-
-			map[y, x] = Tile.Tunnel;
-			AddFrontiers(map, frontiers, x, y);
-
-			while (frontiers.Count > 0)
+			foreach (int i in connected)
 			{
-				// 1. Select, store, and delete a random frontier point
-				int	roll = _rng.Next(frontiers.Count);
-				(int fy, int fx) = frontiers[roll];
-				frontiers.RemoveAt(roll);
+				for (int j = 0; j < centers.Count; j++)
+				{
+					if (connected.Contains(j))
+						continue ;
 
-				// 2. Store all the neighboring frontiers
-				List<(int ny, int nx)>	neighbors = GetNeighbors(map, fx, fy);
-				if (neighbors.Count == 0)
-					continue ;
+					// Use Manhattan distance between connected to unconnected room
+					int	dist = Math.Abs(centers[i].x - centers[j].x)
+							 + Math.Abs(centers[i].y - centers[j].y);
 
-				// 3. Get a random neighbor
-				(int ny, int nx) = neighbors[_rng.Next(neighbors.Count)];
-
-				// 4. Create the path between the frontier and its neighbor
-				map[fy, fx] = Tile.Tunnel;
-				map[(fy + ny) / 2, (fx + nx) / 2] = Tile.Tunnel;
-
-				AddFrontiers(map, frontiers, fx, fy);
+					// Store newly shortest rooms found
+					if (dist < bestDist)
+					{
+						bestDist = dist;
+						bestFrom = i;
+						bestTo = j;
+					}
+				}
 			}
+
+			// TODO: Replace center (y, x) room coordinates by Room objects themselves.
+			DigTunnel(map, centers[bestFrom], centers[bestTo]);
+			connected.Add(bestTo);
+		}
+	}
+
+	// TODO: Replace center starting point by the closest edges of from/to rooms for better results.
+	private static void	DigTunnel(Tile[,] map, (int y, int x)from, (int y, int x)to)
+	{
+		int	x = from.x;
+		int	y = from.y;
+
+		while (x != to.x)
+		{
+			map[y, x] = Tile.Tunnel;
+			x += Math.Sign(to.x - x);
+		}
+		while (y != to.y)
+		{
+			map[y, x] = Tile.Tunnel;
+			y += Math.Sign(to.y - y);
 		}
 	}
 }
