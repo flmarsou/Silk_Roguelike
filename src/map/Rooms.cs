@@ -7,18 +7,12 @@ public partial class	Dungeon
 		public int	Width { get; } = x + width;
 		public int	Height { get; } = y + height;
 
-		public bool	Overlap(Room room, int padding)
-		{
-			return !(this.Width + padding <= room.X
-					|| this.X - padding >= room.Width
-					|| this.Height + padding <= room.Y
-					|| this.Y - padding >= room.Height);
-		}
+		public bool				Overlap(Room room, int padding) => !(this.Width + padding <= room.X
+																	|| this.X - padding >= room.Width
+																	|| this.Height + padding <= room.Y
+																	|| this.Y - padding >= room.Height);
 
-		public (int x, int y)	Center()
-		{
-			return ((X + Width) / 2, (Y + Height) / 2);
-		}
+		public (int y, int x)	Center => ((Y + Height) / 2, (X + Width) / 2);
 	}
 
 	private static void	AddRoom(Tile[,] map, Room room)
