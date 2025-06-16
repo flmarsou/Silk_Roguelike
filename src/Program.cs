@@ -2,35 +2,43 @@
 {
 	private static void	Main()
 	{
-		Tile[,]	map = Dungeon.GenerateDungeon();
-
-		for (int y = 0; y < map.GetLength(0); y++)
+		int	index = 0;
+		while (true)
 		{
-			for (int x = 0; x < map.GetLength(1); x++)
+			Console.WriteLine("Map Generation " + index++);
+			Tile[,]	map = Dungeon.GenerateDungeon();
+
+
+			for (int y = 0; y < map.GetLength(0); y++)
 			{
-				switch (map[y, x])
+				for (int x = 0; x < map.GetLength(1); x++)
 				{
-					case (Tile.Empty):
-						Console.Write("  ");
-						break ;
-					case (Tile.Wall):
-						Console.Write("# ");
-						break ;
-					case (Tile.Floor):
-						Console.Write(". ");
-						break ;
-					case (Tile.Tunnel):
-						Console.Write("T ");
-						break ;
-					case (Tile.Door):
-						Console.Write("D ");
-						break ;
-					default:
-						Console.Write("? ");
-						break ;
+					switch (map[y, x])
+					{
+						case (Tile.Empty):
+							Console.Write("  ");
+							break ;
+						case (Tile.Wall):
+							Console.Write("# ");
+							break ;
+						case (Tile.Floor):
+							Console.Write(". ");
+							break ;
+						case (Tile.Tunnel):
+							Console.Write("T ");
+							break ;
+						case (Tile.Door):
+							Console.Write("D ");
+							break ;
+						default:
+							Console.Write("? ");
+							break ;
+					}
 				}
+				Console.WriteLine();
 			}
-			Console.WriteLine();
+
+			Thread.Sleep(2000);
 		}
 	}
 }
