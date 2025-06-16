@@ -19,6 +19,7 @@ public partial class	Dungeon
 
 		List<Room>	rooms = GenerateRooms(map);
 		ConnectRooms(map, rooms);
+		GenerateWallsForTunnels(map);
 
 		return (map);
 	}
@@ -94,27 +95,37 @@ public partial class	Dungeon
 				}
 			}
 
-			// TODO: Replace center (y, x) room coordinates by Room objects themselves.
-			DigTunnel(map, centers[bestFrom], centers[bestTo]);
+			DigTunnel(map, centers[bestFrom], centers[bestTo], rooms);
 			connected.Add(bestTo);
 		}
 	}
 
-	// TODO: Replace center starting point by the closest edges of from/to rooms for better results.
-	private static void	DigTunnel(Tile[,] map, (int y, int x)from, (int y, int x)to)
+	private static void	GenerateWallsForTunnels(Tile[,] map)
 	{
-		int	x = from.x;
-		int	y = from.y;
-
-		while (x != to.x)
+		for (int y = 0; y < map.GetLength(0); y++)
 		{
-			map[y, x] = Tile.Tunnel;
-			x += Math.Sign(to.x - x);
-		}
-		while (y != to.y)
-		{
-			map[y, x] = Tile.Tunnel;
-			y += Math.Sign(to.y - y);
+			for (int x = 0; x < map.GetLength(1); x++)
+			{
+				if (map[y, x] == Tile.Tunnel || map[y, x] == Tile.Door)
+				{
+					if (map[y - 1, x - 1] == Tile.Empty)	// Top Left
+						map[y - 1, x - 1] = Tile.Wall;
+					if (map[y - 1, x] == Tile.Empty)		// Top
+						map[y - 1, x] = Tile.Wall;
+					if (map[y - 1, x + 1] == Tile.Empty)	// Top Right
+						map[y - 1, x + 1] = Tile.Wall;
+					if (map[y, x + 1] == Tile.Empty)		// Right
+						map[y, x + 1] = Tile.Wall;
+					if (map[y + 1, x + 1] == Tile.Empty)	// Bottom Right
+						map[y + 1, x + 1] = Tile.Wall;
+					if (map[y + 1, x] == Tile.Empty)		// Bottom
+						map[y + 1, x] = Tile.Wall;
+					if (map[y + 1, x - 1] == Tile.Empty)	// Buttom Left
+						map[y + 1, x - 1] = Tile.Wall;
+					if (map[y, x - 1] == Tile.Empty)		// Left
+						map[y, x - 1] = Tile.Wall;
+				}
+			}
 		}
 	}
 }
