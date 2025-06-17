@@ -1,11 +1,11 @@
 public partial class	Dungeon
 {
 	// Settings
-	private static readonly int					_mapWidth = 41;
-	private static readonly int					_mapLength = 41;
-	private static readonly (int min, int max)	_roomSize = (4, 14);
-	private static readonly int					_roomAttempts = 1000;
-	private static readonly int					_roomPadding = 1;
+	private static readonly int					_mapWidth = 41;			// Horizontal (x) amount of tiles
+	private static readonly int					_mapLength = 41;		// Vertical (y) amount of tiles
+	private static readonly (int min, int max)	_roomSize = (4, 14);	// Min and Max dimensions for rooms
+	private static readonly int					_roomAttempts = 1000;	// Amount of attemps to generate rooms
+	private static readonly int					_roomPadding = 1;		// Minimum empty tiles required between rooms
 
 	private readonly static Random	_rng = new Random();
 
@@ -36,10 +36,11 @@ public partial class	Dungeon
 			int	posX = _rng.Next(0, _mapWidth - roomWidth);
 			int	posY = _rng.Next(0, _mapLength - roomHeight);
 
-			Room	newRoom = new Room(posX, posY, roomWidth, roomHeight);
+			Room	newRoom = new Room(posY, posX, roomWidth, roomHeight);
 
 			// 2. Checks if `newRoom` doesn't overlap with another room
 			bool	overlap = false;
+
 			foreach (Room room in rooms)
 			{
 				if (newRoom.Overlap(room, _roomPadding))
@@ -48,6 +49,7 @@ public partial class	Dungeon
 					break ;
 				}
 			}
+
 			if (overlap)
 				continue ;
 
@@ -68,24 +70,27 @@ public partial class	Dungeon
 		for (int i = 0; i < rooms.Count; i++)
 			centers.Add(rooms[i].Center);
 
+		// Run while not all rooms are connected
 		while (connected.Count < centers.Count)
 		{
 			int	bestTo = -1;				// Index of the closest unconnected room
 			int	bestFrom = -1;				// Index of the closest connected room
 			int	bestDist = int.MaxValue;	// Min distance between `bestTo` and `bestFrom`
 
+			// 1. Loop through all connected rooms
 			foreach (int i in connected)
 			{
+				// 2. Compare with all unconnected rooms
 				for (int j = 0; j < centers.Count; j++)
 				{
 					if (connected.Contains(j))
 						continue ;
 
-					// Use Manhattan distance between connected to unconnected room
+					// 3. Use Manhattan distance between connected to unconnected room
 					int	dist = Math.Abs(centers[i].x - centers[j].x)
 							 + Math.Abs(centers[i].y - centers[j].y);
 
-					// Store newly shortest rooms found
+					// 4. Store newly shortest rooms found
 					if (dist < bestDist)
 					{
 						bestDist = dist;
@@ -95,6 +100,7 @@ public partial class	Dungeon
 				}
 			}
 
+			// 5. Dig a tunnel between the closest pair found, and mark it as `connected`
 			DigTunnel(map, centers[bestFrom], centers[bestTo], rooms);
 			connected.Add(bestTo);
 		}
@@ -106,6 +112,7 @@ public partial class	Dungeon
 		{
 			for (int x = 0; x < map.GetLength(1); x++)
 			{
+				// Surround every `Tunnel Tiles` and `Door Tiles` with walls
 				if (map[y, x] == Tile.Tunnel || map[y, x] == Tile.Door)
 				{
 					if (map[y - 1, x - 1] == Tile.Empty)	// Top Left
