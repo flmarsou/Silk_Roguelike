@@ -24,6 +24,8 @@ public partial class	Dungeon
 		return (map);
 	}
 
+	public static bool	IsInBound(int y, int x)	=>	!(y < 0 || y >= _mapLength || x < 0 || x >= _mapWidth);
+
 	private static List<Room>	GenerateRooms(Tile[,] map)
 	{
 		List<Room>	rooms = new List<Room>();
