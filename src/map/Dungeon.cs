@@ -1,5 +1,3 @@
-using System.Security.Cryptography;
-
 public partial class	Dungeon
 {
 	// Settings
