@@ -18,7 +18,22 @@ public partial class	Program
 		_window.Load += OnLoad;
 		_window.Update += OnUpdate;
 		_window.Render += OnRender;
+		_window.Closing += OnClosing;
+		_window.FramebufferResize += OnResize;
 
 		_window.Run();
+	}
+
+	private static void	OnResize(Vector2D<int> newSize)
+	{
+		_gl.Viewport(newSize);
+	}
+
+	private static void	OnClosing()
+	{
+		_gl.DeleteBuffer(_vbo);
+		_gl.DeleteBuffer(_ebo);
+		_gl.DeleteVertexArray(_vao);
+		_gl.DeleteProgram(_program);
 	}
 }
