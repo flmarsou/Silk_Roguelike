@@ -34,6 +34,10 @@ public partial class	Dungeon
 													&& x >= this.X + 1
 													&& x < this.Width - 1);
 
+		/// <summary>
+		/// Returns true if the (y, x) coordinates are in the edge of the context room. <br/>
+		/// Returns false otherwise.
+		/// </summary>
 		public bool	IsEdgeRoom(int y, int x)	=>	!IsInsideRoom(y, x) && IsInRoom(y, x);
 
 		/// <summary>
@@ -83,6 +87,9 @@ public partial class	Dungeon
 		return (false);
 	}
 
+	/// <summary>
+	/// Checks if the (x, y) coordinates are in the edge of any room.
+	/// </summary>
 	private static bool	IsEdgeAnyRoom(List<Room> rooms, int y, int x)
 	{
 		foreach (Room room in rooms)

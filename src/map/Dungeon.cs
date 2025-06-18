@@ -180,5 +180,6 @@ public partial class	Dungeon
 	private static void	GenerateMisc(Tile[,] map, List<Room> rooms)
 	{
 		map[rooms[0].Center.y, rooms[0].Center.x] = Tile.PlayerSpawn;
+		map[rooms[rooms.Count - 1].Center.y, rooms[rooms.Count - 1].Center.x] = Tile.EnemySpawn;
 	}
 }

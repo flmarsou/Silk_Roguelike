@@ -20,23 +20,19 @@ public partial class	Program
 
 		if (key == Key.W)
 		{
-			_player.Move(0, -1, _map);
-			DisplayMap();
+			_player.Move(-1, 0, _map);
 		}
 		if (key == Key.A)
 		{
-			_player.Move(-1, 0, _map);
-			DisplayMap();
+			_player.Move(0, -1, _map);
 		}
 		if (key == Key.S)
 		{
-			_player.Move(0, 1, _map);
-			DisplayMap();
+			_player.Move(1, 0, _map);
 		}
 		if (key == Key.D)
 		{
-			_player.Move(1, 0, _map);
-			DisplayMap();
+			_player.Move(0, 1, _map);
 		}
 	}
 }
