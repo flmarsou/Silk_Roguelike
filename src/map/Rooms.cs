@@ -34,6 +34,8 @@ public partial class	Dungeon
 													&& x >= this.X + 1
 													&& x < this.Width - 1);
 
+		public bool	IsEdgeRoom(int y, int x)	=>	!IsInsideRoom(y, x) && IsInRoom(y, x);
+
 		/// <summary>
 		/// Returns the approximate center (y, x) coordinates of the context room.
 		/// </summary>
@@ -77,6 +79,14 @@ public partial class	Dungeon
 	{
 		foreach (Room room in rooms)
 			if (room.IsInsideRoom(y, x))
+				return (true);
+		return (false);
+	}
+
+	private static bool	IsEdgeAnyRoom(List<Room> rooms, int y, int x)
+	{
+		foreach (Room room in rooms)
+			if (room.IsEdgeRoom(y, x))
 				return (true);
 		return (false);
 	}
