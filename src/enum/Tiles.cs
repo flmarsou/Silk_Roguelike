@@ -4,5 +4,8 @@ public enum	Tile
 	Wall,
 	Floor,
 	Tunnel,
-	Door
+	Door,
+	DoorOpen,
+	PlayerSpawn,
+	EnemySpawn
 }
