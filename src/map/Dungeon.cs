@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+
 public partial class	Dungeon
 {
 	// Settings
@@ -19,7 +21,9 @@ public partial class	Dungeon
 
 		List<Room>	rooms = GenerateRooms(map);
 		ConnectRooms(map, rooms);
-		GenerateWallsForTunnels(map);
+		GenerateTunnelWalls(map);
+		GenerateDoors(map, rooms);
+		GenerateMisc(map, rooms);
 
 		return (map);
 	}
@@ -108,7 +112,7 @@ public partial class	Dungeon
 		}
 	}
 
-	private static void	GenerateWallsForTunnels(Tile[,] map)
+	private static void	GenerateTunnelWalls(Tile[,] map)
 	{
 		for (int y = 0; y < map.GetLength(0); y++)
 		{
@@ -136,5 +140,47 @@ public partial class	Dungeon
 				}
 			}
 		}
+	}
+
+	private static void	GenerateDoors(Tile[,] map, List<Room> rooms)
+	{
+		for (int y = 0; y < map.GetLength(0); y++)
+		{
+			for (int x = 0; x < map.GetLength(1); x++)
+			{
+				if (map[y, x] == Tile.Tunnel && IsEdgeAnyRoom(rooms, y, x)			// `Tunnel Tile` on the edge of a room
+					&& ((map[y - 1, x] == Tile.Wall && map[y + 1, x] == Tile.Wall)	// AND `Wall Tiles` top and bottom
+					|| (map[y, x + 1] == Tile.Wall && map[y, x - 1] == Tile.Wall)))	// OR `Wall Tiles` right and left
+				{
+					map[y, x] = Tile.Door;
+
+					if (map[y - 2, x] == Tile.Door			// `Door Tile` two tiles higher
+						&& map[y - 1, x - 1] == Tile.Wall	// `Wall Tile` top left
+						&& map[y - 1, x + 1] == Tile.Wall)	// `Wall Tile` top right
+					{
+						int	roll = _rng.Next(3);
+
+						map[y, x] = Tile.Tunnel;
+						map[y - 2, x] = Tile.Tunnel;
+						map[y - roll, x] = Tile.Door;
+					}
+					else if (map[y, x - 2] == Tile.Door		// `Door Tile` two tiles left
+						&& map[y - 1, x - 1] == Tile.Wall	// `Wall Tile` top left
+						&& map[y + 1, x - 1] == Tile.Wall)	// `Wall Tile` bottom left
+					{
+						int	roll = _rng.Next(3);
+
+						map[y, x] = Tile.Tunnel;
+						map[y, x - 2] = Tile.Tunnel;
+						map[y, x - roll] = Tile.Door;
+					}
+				}
+			}
+		}
+	}
+
+	private static void	GenerateMisc(Tile[,] map, List<Room> rooms)
+	{
+		map[rooms[0].Center.y, rooms[0].Center.x] = Tile.PlayerSpawn;
 	}
 }
