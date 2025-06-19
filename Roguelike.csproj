@@ -8,10 +8,23 @@
     <!-- <Nullable>enable</Nullable> -->
   </PropertyGroup>
 
+  <!-- Silk.NET -->
   <ItemGroup>
     <PackageReference Include="Silk.NET.Input" Version="2.22.0" />
     <PackageReference Include="Silk.NET.OpenGL" Version="2.22.0" />
     <PackageReference Include="Silk.NET.Windowing" Version="2.22.0" />
+  </ItemGroup>
+
+  <!-- Image -->
+  <ItemGroup>
+    <PackageReference Include="StbImageSharp" Version="2.30.15" />
+  </ItemGroup>
+
+  <!-- Assets -->
+  <ItemGroup>
+    <None Update="assets\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
