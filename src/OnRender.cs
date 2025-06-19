@@ -4,14 +4,10 @@ public partial class	Program
 {
 	private static unsafe void	OnRender(double deltaTime)
 	{
-		// DisplayMap();
 		_gl.Clear((uint)ClearBufferMask.ColorBufferBit);
 
-		// Bind the VAO and Shader Program
-		_gl.BindVertexArray(_vao);
-		_gl.UseProgram(_program);
+		_gl.BindTexture(TextureTarget.Texture2D, _textures[0]);
 
-		// Draw the quad
 		_gl.DrawElements(PrimitiveType.Triangles, (uint)_indices.Length, DrawElementsType.UnsignedInt, null);
 	}
 
