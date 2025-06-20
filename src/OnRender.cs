@@ -1,61 +1,66 @@
+using System.Numerics;
 using Silk.NET.OpenGL;
 
 public partial class	Program
 {
+	private static readonly int[,]	_map =
+	{
+		{ 1, 1, 1, 1, 1 },
+		{ 1, 0, 0, 0, 1 },
+		{ 1, 0, 1, 0, 1 },
+		{ 1, 0, 0, 0, 1 },
+		{ 1, 1, 1, 1, 1 }
+	};
+
 	private static unsafe void	OnRender(double deltaTime)
 	{
 		_gl.Clear((uint)ClearBufferMask.ColorBufferBit);
+		_gl.UseProgram(_program);
+		_gl.BindVertexArray(_vao);
 
-		_gl.BindTexture(TextureTarget.Texture2D, _textures[0]);
+		int	rows = _map.GetLength(0);
+		int	cols = _map.GetLength(1);
 
-		_gl.DrawElements(PrimitiveType.Triangles, (uint)_indices.Length, DrawElementsType.UnsignedInt, null);
+		SetProjection(rows, cols);
+
+		for (int y = 0; y < rows; y++)
+		{
+			for (int x = 0; x < cols; x++)
+			{
+				int		tile = _map[y, x];
+				uint	texture = _textures[tile];
+
+				_gl.BindTexture(TextureTarget.Texture2D, texture);
+
+				Matrix4x4	transform = Matrix4x4.CreateTranslation(new Vector3(x, -y, 0));
+				SetTransform(transform);
+
+				_gl.DrawElements(PrimitiveType.Triangles, (uint)_indices.Length, DrawElementsType.UnsignedInt, null);
+			}
+		}
+
 	}
 
-	// private static void	DisplayMap()
-	// {
-	// 	Console.Clear();
+	private static unsafe void SetTransform(Matrix4x4 matrix)
+	{
+		int	location = _gl.GetUniformLocation(_program, "transform");
 
-	// 	for (int y = 0; y < _map.GetLength(0); y++)
-	// 	{
-	// 		for (int x = 0; x < _map.GetLength(1); x++)
-	// 		{
-	// 			// Player
-	// 			if (_player.Y == y && _player.X == x)
-	// 			{
-	// 				if (_player.Health >= 10)
-	// 					Console.ForegroundColor = ConsoleColor.Green;
-	// 				else if (_player.Health > 5)
-	// 					Console.ForegroundColor = ConsoleColor.Yellow;
-	// 				else
-	// 					Console.ForegroundColor = ConsoleColor.Red;
-	// 				Console.Write("P ");
+		fixed (Matrix4x4 *tBuffer = &matrix.M11)
+			_gl.UniformMatrix4(location, 1, false, (float *)tBuffer);
+	}
 
-	// 				Console.ResetColor();
-	// 				continue ;
-	// 			}
+	private static unsafe void	SetProjection(int rows, int cols)
+	{
+		Matrix4x4	projection = Matrix4x4.CreateOrthographicOffCenter(
+			left: 0,
+			right: cols,
+			bottom: -rows,
+			top: 0,
+			zNearPlane: -1.0f,
+			zFarPlane: 1.0f
+		);
 
-	// 			// Enemy
-	// 			if (_enemy.Y == y && _enemy.X == x)
-	// 			{
-	// 				Console.Write("E ");
-	// 				continue ;
-	// 			}
-
-	// 			// Tiles
-	// 			switch (_map[y, x])
-	// 			{
-	// 				case (Tile.Empty): Console.Write("  "); break ;
-	// 				case (Tile.Wall): Console.Write("# "); break ;
-	// 				case (Tile.Floor): Console.Write(". "); break ;
-	// 				case (Tile.Tunnel): Console.Write(". "); break ;
-	// 				case (Tile.Door): Console.Write("D "); break ;
-	// 				case (Tile.DoorOpen): Console.Write("d "); break ;
-	// 				default: Console.Write("? "); break ;
-	// 			}
-	// 		}
-	// 		Console.WriteLine();
-	// 	}
-
-	// 	Console.WriteLine("Player HP: " + _player.Health);
-	// }
+		int	projectionLocation = _gl.GetUniformLocation(_program, "projection");
+		_gl.UniformMatrix4(projectionLocation, 1, false, (float *)&projection);
+	}
 }
