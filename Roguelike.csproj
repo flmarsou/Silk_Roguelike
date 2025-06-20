@@ -15,14 +15,21 @@
     <PackageReference Include="Silk.NET.Windowing" Version="2.22.0" />
   </ItemGroup>
 
-  <!-- Image -->
+  <!-- 3rd Party Dependencies -->
   <ItemGroup>
     <PackageReference Include="StbImageSharp" Version="2.30.15" />
   </ItemGroup>
 
+  <!-- Shaders -->
+  <ItemGroup>
+    <None Update="shaders\*.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <!-- Assets -->
   <ItemGroup>
-    <None Update="assets\**\*.*">
+    <None Update="assets\**\*.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
