@@ -15,11 +15,11 @@ public partial class	Program
 
 	private static readonly float[]	_vertices =
 	{
-		// aPos (x, y, z)     |    aTexPos (u, v)
-		 0.5f,  0.5f,  0.0f,	 1.0f,  1.0f,	// 0 - Top Right
-		 0.5f, -0.5f,  0.0f,	 1.0f,  0.0f,	// 1 - Bottom Right
-		-0.5f, -0.5f,  0.0f,	 0.0f,  0.0f,	// 2 - Bottom Left
-		-0.5f,  0.5f,  0.0f,	 0.0f,  1.0f	// 3 - Top Left
+		// Pos (x, y)      UV (u, v)
+		 0.5f,  0.5f,	 1.0f,  1.0f,	// 0 - Top Right
+		 0.5f, -0.5f,	 1.0f,  0.0f,	// 1 - Bottom Right
+		-0.5f, -0.5f,	 0.0f,  0.0f,	// 2 - Bottom Left
+		-0.5f,  0.5f,	 0.0f,  1.0f	// 3 - Top Left
 	};
 
 	private static readonly uint[]	_indices =
@@ -39,8 +39,6 @@ public partial class	Program
 		InitShaders();
 
 		LoadTexture("assets/test.png", 0);
-
-		BindShaderUniforms();
 
 		_gl.UseProgram(_program);
 	}
@@ -89,7 +87,7 @@ public partial class	Program
 			size: 3,
 			type: VertexAttribPointerType.Float,
 			normalized: false,
-			stride: 5 * sizeof(float),
+			stride: 4 * sizeof(float),
 			pointer: (void *)0
 		);
 
@@ -100,8 +98,8 @@ public partial class	Program
 			size: 2,
 			type: VertexAttribPointerType.Float,
 			normalized: false,
-			stride: 5 * sizeof(float),
-			pointer: (void *)(3 * sizeof(float))
+			stride: 4 * sizeof(float),
+			pointer: (void *)(2 * sizeof(float))
 		);
 	}
 
@@ -190,11 +188,5 @@ public partial class	Program
 		_gl.BindTexture(TextureTarget.Texture2D, 0);
 
 		_textures[index] = texture;
-	}
-
-	private static void	BindShaderUniforms()
-	{
-		int	location = _gl.GetUniformLocation(_program, "uTexture");
-		_gl.Uniform1(location, 0);
 	}
 }

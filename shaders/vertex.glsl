@@ -1,12 +1,12 @@
 #version 460 core
 
-layout (location = 0) in vec3	aPos;
-layout (location = 1) in vec2	aTextureCoord;
+layout (location = 0) in vec2	pos;	// x, y positions
+layout (location = 1) in vec2	uv;		// u, v texture coordinates
 
-out vec2	frag_TextureCoord;
+out vec2						tex;
 
 void	main()
 {
-	gl_Position = vec4(aPos, 1.0);
-	frag_TextureCoord = aTextureCoord;
+	gl_Position = vec4(pos, 0.0, 1.0);
+	tex = uv;
 }
