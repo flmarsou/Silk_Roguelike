@@ -11,7 +11,7 @@ public partial class	Program
 
 	private static uint	_program;
 
-	private static List<uint>	_textures = new List<uint>();
+	private static readonly uint[]	_textures = new uint[1];
 
 	private static readonly float[]	_vertices =
 	{
@@ -28,37 +28,8 @@ public partial class	Program
 		1u, 2u, 3u
 	};
 
-	private static readonly string	_vertexCode =
-	@"
-		#version 460 core
-
-		layout (location = 0) in vec3 aPos;
-		layout (location = 1) in vec2 aTextureCoord;
-
-		out vec2 frag_TextureCoord;
-
-		void main()
-		{
-			gl_Position = vec4(aPos, 1.0);
-			frag_TextureCoord = aTextureCoord;
-		}
-	";
-
-	private static readonly string	_fragmentCode =
-	@"
-		#version 460 core
-
-		in vec2 frag_TextureCoord;
-
-		out vec4 fragmentColor;
-
-		uniform sampler2D uTexture;
-
-		void main()
-		{
-			fragmentColor = texture(uTexture, frag_TextureCoord);
-		}
-	";
+	private static readonly string	_vertexCode = File.ReadAllText("shaders/vertex.glsl");
+	private static readonly string	_fragmentCode = File.ReadAllText("shaders/fragment.glsl");
 
 	private static unsafe void	OnLoad()
 	{
@@ -67,9 +38,11 @@ public partial class	Program
 		InitBuffers();
 		InitShaders();
 
-		LoadTexture("assets/test.png");
+		LoadTexture("assets/test.png", 0);
 
 		BindShaderUniforms();
+
+		_gl.UseProgram(_program);
 	}
 
 	/// <summary>
@@ -181,7 +154,7 @@ public partial class	Program
 	/// Loads an RGBa texture from Disk into GPU Memory and returns its OpenGL handle. <br/>
 	/// The texture is configured with repeat wrapping and nearest-neighbor filtering.
 	/// </summary>
-	private static unsafe void	LoadTexture(string path)
+	private static unsafe void	LoadTexture(string path, uint index)
 	{
 		// Load the image file into memory and decode it as RGBa
 		ImageResult	result = ImageResult.FromMemory(File.ReadAllBytes(path), ColorComponents.RedGreenBlueAlpha);
@@ -216,13 +189,12 @@ public partial class	Program
 		// Unbind the texture to prevent accidental modification
 		_gl.BindTexture(TextureTarget.Texture2D, 0);
 
-		_textures.Add(texture);
+		_textures[index] = texture;
 	}
 
 	private static void	BindShaderUniforms()
 	{
 		int	location = _gl.GetUniformLocation(_program, "uTexture");
 		_gl.Uniform1(location, 0);
-		_gl.UseProgram(_program);
 	}
 }
