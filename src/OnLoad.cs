@@ -11,7 +11,7 @@ public partial class	Program
 
 	private static uint	_program;
 
-	private static readonly uint[]	_textures = new uint[1];
+	private static readonly uint[]	_textures = new uint[2];
 
 	private static readonly float[]	_vertices =
 	{
@@ -38,8 +38,9 @@ public partial class	Program
 		InitBuffers();
 		InitShaders();
 
-		LoadTexture("assets/test.png", 0);
-
+		LoadTexture("assets/wall.png", 0);
+		LoadTexture("assets/floor.png", 1);
+ 
 		_gl.UseProgram(_program);
 	}
 
@@ -84,7 +85,7 @@ public partial class	Program
 		_gl.EnableVertexAttribArray(0);
 		_gl.VertexAttribPointer(
 			index: 0,
-			size: 3,
+			size: 2,
 			type: VertexAttribPointerType.Float,
 			normalized: false,
 			stride: 4 * sizeof(float),
@@ -115,7 +116,6 @@ public partial class	Program
 		_gl.ShaderSource(vertexShader, _vertexCode);
 		_gl.CompileShader(vertexShader);
 
-		// Check for Vertex Shader compilation errors
 		_gl.GetShader(vertexShader, ShaderParameterName.CompileStatus, out int vStatus);
 		if (vStatus != (int)GLEnum.True)
 			throw new Exception($"Vertex Shader failed to compile: {_gl.GetShaderInfoLog(vertexShader)}");
@@ -125,7 +125,6 @@ public partial class	Program
 		_gl.ShaderSource(fragmentShader, _fragmentCode);
 		_gl.CompileShader(fragmentShader);
 
-		// Check for Fragment Shader compilation errors
 		_gl.GetShader(fragmentShader, ShaderParameterName.CompileStatus, out int fStatus);
 		if (fStatus != (int)GLEnum.True)
 			throw new Exception($"Fragment Shader failed to compile: {_gl.GetShaderInfoLog(fragmentShader)}");
@@ -136,7 +135,6 @@ public partial class	Program
 		_gl.AttachShader(_program, fragmentShader);
 		_gl.LinkProgram(_program);
 
-		// Check for Shader Program linking errors
 		_gl.GetProgram(_program, ProgramPropertyARB.LinkStatus, out int lStatus);
 		if (lStatus != (int)GLEnum.True)
 			throw new Exception($"Program Shader failed to link: {_gl.GetProgramInfoLog(_program)}");
