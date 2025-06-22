@@ -8,6 +8,7 @@ public partial class	Program
 		{ 1, 1, 1, 1, 1 },
 		{ 1, 0, 0, 0, 1 },
 		{ 1, 0, 1, 0, 1 },
+		{ 1, 1, 1, 1, 1 },
 		{ 1, 0, 0, 0, 1 },
 		{ 1, 1, 1, 1, 1 }
 	};
@@ -45,17 +46,25 @@ public partial class	Program
 	{
 		int	location = _gl.GetUniformLocation(_program, "transform");
 
-		fixed (Matrix4x4 *tBuffer = &matrix.M11)
-			_gl.UniformMatrix4(location, 1, false, (float *)tBuffer);
+		float[]	buffer = new float[16]
+		{
+			matrix.M11, matrix.M12, matrix.M13, matrix.M14,
+			matrix.M21, matrix.M22, matrix.M23, matrix.M24,
+			matrix.M31, matrix.M32, matrix.M33, matrix.M34,
+			matrix.M41, matrix.M42, matrix.M43, matrix.M44
+		};
+
+		fixed (float *tBuffer = buffer)
+			_gl.UniformMatrix4(location, 1, false, tBuffer);
 	}
 
 	private static unsafe void	SetProjection(int rows, int cols)
 	{
 		Matrix4x4	projection = Matrix4x4.CreateOrthographicOffCenter(
-			left: 0,
-			right: cols,
-			bottom: -rows,
-			top: 0,
+			left: -0.5f,
+			right: cols - 0.5f,
+			bottom: -rows + 0.5f,
+			top: 0.5f,
 			zNearPlane: -1.0f,
 			zFarPlane: 1.0f
 		);
