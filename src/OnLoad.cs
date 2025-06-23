@@ -33,6 +33,8 @@ public partial class	Program
 
 	private static unsafe void	OnLoad()
 	{
+		LoadKeyDown();
+
 		_gl = GL.GetApi(_window);
 
 		InitBuffers();
@@ -40,9 +42,7 @@ public partial class	Program
 
 		LoadTexture("assets/wall.png", 0);
 		LoadTexture("assets/floor.png", 1);
- 
-		_gl.UseProgram(_program);
-	}
+ 	}
 
 	/// <summary>
 	/// Initializes vertex data by generating and binding a VAO, VBO, and EBO. <br/>

@@ -5,13 +5,15 @@ public partial class	Program
 {
 	private static readonly int[,]	_map =
 	{
-		{ 1, 1, 1, 1, 1 },
-		{ 1, 0, 0, 0, 1 },
 		{ 1, 0, 1, 0, 1 },
-		{ 1, 1, 1, 1, 1 },
-		{ 1, 0, 0, 0, 1 },
-		{ 1, 1, 1, 1, 1 }
+		{ 0, 1, 0, 1, 0 },
+		{ 1, 0, 1, 0, 1 },
+		{ 0, 1, 0, 1, 0 },
+		{ 1, 0, 1, 0, 1 },
+		{ 0, 1, 0, 1, 0 }
 	};
+
+	private static Vector2	_cameraPos = Vector2.Zero;
 
 	private static unsafe void	OnRender(double deltaTime)
 	{
@@ -22,7 +24,7 @@ public partial class	Program
 		int	rows = _map.GetLength(0);
 		int	cols = _map.GetLength(1);
 
-		SetProjection(rows, cols);
+		SetProjection();
 
 		for (int y = 0; y < rows; y++)
 		{
@@ -39,32 +41,34 @@ public partial class	Program
 				_gl.DrawElements(PrimitiveType.Triangles, (uint)_indices.Length, DrawElementsType.UnsignedInt, null);
 			}
 		}
-
 	}
 
 	private static unsafe void SetTransform(Matrix4x4 matrix)
 	{
+		Matrix4x4	view = Matrix4x4.CreateTranslation(new Vector3(-_cameraPos, 0));
+		Matrix4x4	transform = view * matrix;
+
 		int	location = _gl.GetUniformLocation(_program, "transform");
 
 		float[]	buffer = new float[16]
 		{
-			matrix.M11, matrix.M12, matrix.M13, matrix.M14,
-			matrix.M21, matrix.M22, matrix.M23, matrix.M24,
-			matrix.M31, matrix.M32, matrix.M33, matrix.M34,
-			matrix.M41, matrix.M42, matrix.M43, matrix.M44
+			transform.M11, transform.M12, transform.M13, transform.M14,
+			transform.M21, transform.M22, transform.M23, transform.M24,
+			transform.M31, transform.M32, transform.M33, transform.M34,
+			transform.M41, transform.M42, transform.M43, transform.M44
 		};
 
 		fixed (float *tBuffer = buffer)
 			_gl.UniformMatrix4(location, 1, false, tBuffer);
 	}
 
-	private static unsafe void	SetProjection(int rows, int cols)
+	private static unsafe void	SetProjection()
 	{
 		Matrix4x4	projection = Matrix4x4.CreateOrthographicOffCenter(
-			left: -0.5f,
-			right: cols - 0.5f,
-			bottom: -rows + 0.5f,
-			top: 0.5f,
+			left: 0.0f,
+			right: 10.0f,
+			bottom: 10.0f,
+			top: 0.0f,
 			zNearPlane: -1.0f,
 			zFarPlane: 1.0f
 		);
