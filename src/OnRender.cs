@@ -8,6 +8,7 @@ public partial class	Program
 	private static unsafe void	OnRender(double deltaTime)
 	{
 		_gl.Clear((uint)ClearBufferMask.ColorBufferBit);
+		_gl.ClearColor(0.294f, 0.224f, 0.243f, 1.0f);
 		_gl.UseProgram(_program);
 		_gl.BindVertexArray(_vao);
 
