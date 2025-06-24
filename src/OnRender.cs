@@ -3,16 +3,6 @@ using Silk.NET.OpenGL;
 
 public partial class	Program
 {
-	private static readonly int[,]	_map =
-	{
-		{ 1, 0, 1, 0, 1 },
-		{ 0, 1, 0, 1, 0 },
-		{ 1, 0, 1, 0, 1 },
-		{ 0, 1, 0, 1, 0 },
-		{ 1, 0, 1, 0, 1 },
-		{ 0, 1, 0, 1, 0 }
-	};
-
 	private static Vector2	_cameraPos = Vector2.Zero;
 
 	private static unsafe void	OnRender(double deltaTime)
@@ -30,12 +20,15 @@ public partial class	Program
 		{
 			for (int x = 0; x < cols; x++)
 			{
-				int		tile = _map[y, x];
-				uint	texture = _textures[tile];
+				TextureID	tile = _texMap[y, x];
+				if (tile == TextureID.Empty)
+					continue ;
+
+				uint	texture = _textures[(uint)tile];
 
 				_gl.BindTexture(TextureTarget.Texture2D, texture);
 
-				Matrix4x4	transform = Matrix4x4.CreateTranslation(new Vector3(x, -y, 0));
+				Matrix4x4	transform = Matrix4x4.CreateTranslation(new Vector3(x, y, 0));
 				SetTransform(transform);
 
 				_gl.DrawElements(PrimitiveType.Triangles, (uint)_indices.Length, DrawElementsType.UnsignedInt, null);
@@ -64,10 +57,14 @@ public partial class	Program
 
 	private static unsafe void	SetProjection()
 	{
+		float	aspect = _windowWidth / (float)_windowHeight;
+		float	fixedHeight = 50.0f;
+		float	fixedWidth = fixedHeight * aspect;
+
 		Matrix4x4	projection = Matrix4x4.CreateOrthographicOffCenter(
 			left: 0.0f,
-			right: 10.0f,
-			bottom: 10.0f,
+			right: fixedWidth,
+			bottom: fixedHeight,
 			top: 0.0f,
 			zNearPlane: -1.0f,
 			zFarPlane: 1.0f
