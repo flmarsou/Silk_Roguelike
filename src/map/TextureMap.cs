@@ -28,28 +28,49 @@ public partial class	Dungeon
 				bool	insideNE = y > 0 && x < _mapWidth - 1 && map[y - 1, x + 1] != Tile.Wall && map[y - 1, x + 1] != Tile.Empty;
 				bool	insideSE = y < _mapHeight - 1 && x < _mapWidth - 1 && map[y + 1, x + 1] != Tile.Wall && map[y + 1, x + 1] != Tile.Empty;
 
-				if (wallW && wallE)								// North and South walls
+				// Walls
+				if (wallW && wallE)
 				{
-					if (insideS)
+					if (insideN)
 						texMap[y, x] = TextureID.WallNorth;
-					else if (insideN)
+					else if (insideS)
 						texMap[y, x] = TextureID.WallSouth;
 				}
-				else if (wallN && wallS)						// West and East walls
+				else if (wallN && wallS)
 				{
-					if (insideE)
+					if (insideW)
 						texMap[y, x] = TextureID.WallWest;
-					else if (insideW)
+					else if (insideE)
 						texMap[y, x] = TextureID.WallEast;
 				}
-				else if (wallS && wallW && insideSW)			// Top Right Corner walls
-					texMap[y, x] = TextureID.WallEast;
-				else if (wallN && wallW && insideNW)			// Bottom Right Corner walls
-					texMap[y, x] = TextureID.WallCornerEast;
-				else if (wallN && wallE && insideNE)			// Bottom Left Corner walls
-					texMap[y, x] = TextureID.WallCornerWest;
-				else if (wallS && wallE && insideSE)			// Top Left Corner walls
-					texMap[y, x] = TextureID.WallWest;
+				// Corners Walls
+				else if (wallS && wallW)
+				{
+					if (insideSW)
+						texMap[y, x] = TextureID.WallCornerSW;
+					else if (insideN && insideE)
+						texMap[y, x] = TextureID.WallInnerCornerNE;
+				}
+				else if (wallN && wallW)
+				{
+					if (insideNW)
+						texMap[y, x] = TextureID.WallCornerNW;
+					else if (insideS && insideE)
+						texMap[y, x] = TextureID.WallInnerCornerSE;
+				}
+				else if (wallN && wallE)
+				{
+					if (insideNE)
+						texMap[y, x] = TextureID.WallCornerNE;
+					else if (insideS && insideW)
+						texMap[y, x] = TextureID.WallInnerCornerSW;
+				}
+				else if (wallS && wallE)
+					if (insideSE)
+						texMap[y, x] = TextureID.WallCornerSE;
+					else if (insideN && insideW)
+						texMap[y, x] = TextureID.WallInnerCornerNW;
+				// U Shaped Walls
 			}
 		}
 

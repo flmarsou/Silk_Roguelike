@@ -28,7 +28,7 @@ public partial class	Program
 	private static readonly string	_fragmentCode = File.ReadAllText("shaders/fragment.glsl");
 	private static uint				_program;
 
-	private static readonly uint[]	_textures = new uint[7];
+	private static readonly uint[]	_textures = new uint[12];
 
 	private static unsafe void	OnLoad()
 	{
@@ -46,8 +46,14 @@ public partial class	Program
 		LoadTexture("assets/wall_south.png", (uint)TextureID.WallSouth);
 		LoadTexture("assets/wall_west.png", (uint)TextureID.WallWest);
 		LoadTexture("assets/wall_east.png", (uint)TextureID.WallEast);
-		LoadTexture("assets/wall_corner_west.png", (uint)TextureID.WallCornerWest);
-		LoadTexture("assets/wall_corner_east.png", (uint)TextureID.WallCornerEast);
+		LoadTexture("assets/wall_corner_se.png", (uint)TextureID.WallCornerSE);
+		LoadTexture("assets/wall_corner_sw.png", (uint)TextureID.WallCornerSW);
+		LoadTexture("assets/wall_corner_ne.png", (uint)TextureID.WallCornerNE);
+		LoadTexture("assets/wall_corner_nw.png", (uint)TextureID.WallCornerNW);
+		LoadTexture("assets/wall_inner_corner_se.png", (uint)TextureID.WallInnerCornerSE);
+		LoadTexture("assets/wall_inner_corner_sw.png", (uint)TextureID.WallInnerCornerSW);
+		LoadTexture("assets/wall_inner_corner_ne.png", (uint)TextureID.WallInnerCornerNE);
+		LoadTexture("assets/wall_inner_corner_nw.png", (uint)TextureID.WallInnerCornerNW);
 		// LoadTexture("assets/wall_both_sides.png", 6);
  	}
 

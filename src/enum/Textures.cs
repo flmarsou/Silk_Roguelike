@@ -5,7 +5,12 @@ public enum	TextureID
 	WallSouth,
 	WallWest,
 	WallEast,
-	WallCornerWest,
-	WallCornerEast,
-	WallBothSides
+	WallCornerNE,
+	WallCornerSE,
+	WallCornerSW,
+	WallCornerNW,
+	WallInnerCornerNE,
+	WallInnerCornerSE,
+	WallInnerCornerSW,
+	WallInnerCornerNW
 }
