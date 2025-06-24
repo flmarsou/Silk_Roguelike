@@ -2,19 +2,19 @@ public partial class	Dungeon
 {
 	// Settings
 	private static readonly int					_mapWidth = 41;			// Horizontal (x) amount of tiles
-	private static readonly int					_mapLength = 41;		// Vertical (y) amount of tiles
+	private static readonly int					_mapHeight = 41;		// Vertical (y) amount of tiles
 	private static readonly (int min, int max)	_roomSize = (4, 14);	// Min and Max dimensions for rooms
-	private static readonly int					_roomAttempts = 1000;	// Amount of attemps to generate rooms
+	private static readonly int					_roomAttempts = 2;	// Amount of attemps to generate rooms
 	private static readonly int					_roomPadding = 1;		// Minimum empty tiles required between rooms
 
 	private readonly static Random	_rng = new Random();
 
 	public static Tile[,]	GenerateDungeon()
 	{
-		Tile[,]	map = new Tile[_mapLength, _mapWidth];
+		Tile[,]	map = new Tile[_mapHeight, _mapWidth];
 
-		for (int y = 0; y < map.GetLength(0); y++)
-			for (int x = 0; x < map.GetLength(1); x++)
+		for (int y = 0; y < _mapHeight; y++)
+			for (int x = 0; x < _mapWidth; x++)
 				map[y, x] = Tile.Empty;
 
 		List<Room>	rooms = GenerateRooms(map);
@@ -23,10 +23,12 @@ public partial class	Dungeon
 		GenerateDoors(map, rooms);
 		GenerateMisc(map, rooms);
 
+		PrintDungeon(map);
+
 		return (map);
 	}
 
-	public static bool	IsInBound(int y, int x)	=>	!(y < 0 || y >= _mapLength || x < 0 || x >= _mapWidth);
+	public static bool	IsInBound(int y, int x)	=>	!(y < 0 || y >= _mapHeight || x < 0 || x >= _mapWidth);
 
 	private static List<Room>	GenerateRooms(Tile[,] map)
 	{
@@ -38,7 +40,7 @@ public partial class	Dungeon
 			int	roomWidth = _rng.Next(_roomSize.min, _roomSize.max);
 			int	roomHeight = _rng.Next(_roomSize.min, _roomSize.max);
 			int	posX = _rng.Next(0, _mapWidth - roomWidth);
-			int	posY = _rng.Next(0, _mapLength - roomHeight);
+			int	posY = _rng.Next(0, _mapHeight - roomHeight);
 
 			Room	newRoom = new Room(posY, posX, roomWidth, roomHeight);
 
@@ -112,9 +114,9 @@ public partial class	Dungeon
 
 	private static void	GenerateTunnelWalls(Tile[,] map)
 	{
-		for (int y = 0; y < map.GetLength(0); y++)
+		for (int y = 0; y < _mapHeight; y++)
 		{
-			for (int x = 0; x < map.GetLength(1); x++)
+			for (int x = 0; x < _mapWidth; x++)
 			{
 				// Surround every `Tunnel Tiles` and `Door Tiles` with walls
 				if (map[y, x] == Tile.Tunnel || map[y, x] == Tile.Door)
@@ -142,9 +144,9 @@ public partial class	Dungeon
 
 	private static void	GenerateDoors(Tile[,] map, List<Room> rooms)
 	{
-		for (int y = 0; y < map.GetLength(0); y++)
+		for (int y = 0; y < _mapHeight; y++)
 		{
-			for (int x = 0; x < map.GetLength(1); x++)
+			for (int x = 0; x < _mapWidth; x++)
 			{
 				if (map[y, x] == Tile.Tunnel && IsEdgeAnyRoom(rooms, y, x)			// `Tunnel Tile` on the edge of a room
 					&& ((map[y - 1, x] == Tile.Wall && map[y + 1, x] == Tile.Wall)	// AND `Wall Tiles` top and bottom
@@ -181,5 +183,37 @@ public partial class	Dungeon
 	{
 		map[rooms[0].Center.y, rooms[0].Center.x] = Tile.PlayerSpawn;
 		map[rooms[rooms.Count - 1].Center.y, rooms[rooms.Count - 1].Center.x] = Tile.EnemySpawn;
+	}
+
+	private static void	PrintDungeon(Tile[,] map)
+	{
+		for (int y = 0; y < _mapHeight; y++)
+		{
+			for (int x = 0; x < _mapWidth; x++)
+			{
+				switch (map[y, x])
+				{
+					case (Tile.Empty):
+						Console.Write("  ");
+						break ;
+					case (Tile.Floor):
+						Console.Write(". ");
+						break ;
+					case (Tile.Wall):
+						Console.Write("# ");
+						break ;
+					case (Tile.Tunnel):
+						Console.Write("T ");
+						break ;
+					case (Tile.Door):
+						Console.Write("D ");
+						break ;
+					default:
+						Console.Write("? ");
+						break ;
+				}
+			}
+			Console.WriteLine();
+		}
 	}
 }
