@@ -20,19 +20,19 @@ public partial class	Program
 
 		if (key == Key.W)
 		{
-			_cameraPos.Y -= 0.5f;
+			_cameraPos.Y -= 2.5f;
 		}
 		if (key == Key.A)
 		{
-			_cameraPos.X -= 0.5f;
+			_cameraPos.X -= 2.5f;
 		}
 		if (key == Key.S)
 		{
-			_cameraPos.Y += 0.5f;
+			_cameraPos.Y += 2.5f;
 		}
 		if (key == Key.D)
 		{
-			_cameraPos.X += 0.5f;
+			_cameraPos.X += 2.5f;
 		}
 	}
 }
