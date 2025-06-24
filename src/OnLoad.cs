@@ -9,10 +9,6 @@ public partial class	Program
 	private static uint	_vbo;
 	private static uint	_ebo;
 
-	private static uint	_program;
-
-	private static readonly uint[]	_textures = new uint[2];
-
 	private static readonly float[]	_vertices =
 	{
 		// Pos (x, y)      UV (u, v)
@@ -30,6 +26,9 @@ public partial class	Program
 
 	private static readonly string	_vertexCode = File.ReadAllText("shaders/vertex.glsl");
 	private static readonly string	_fragmentCode = File.ReadAllText("shaders/fragment.glsl");
+	private static uint				_program;
+
+	private static readonly uint[]	_textures = new uint[7];
 
 	private static unsafe void	OnLoad()
 	{
@@ -37,11 +36,19 @@ public partial class	Program
 
 		_gl = GL.GetApi(_window);
 
+		_windowWidth = _window.FramebufferSize.X;
+		_windowHeight = _window.FramebufferSize.Y;
+
 		InitBuffers();
 		InitShaders();
 
-		LoadTexture("assets/wall.png", 0);
-		LoadTexture("assets/floor.png", 1);
+		LoadTexture("assets/wall_north.png", (uint)TextureID.WallNorth);
+		LoadTexture("assets/wall_south.png", (uint)TextureID.WallSouth);
+		LoadTexture("assets/wall_west.png", (uint)TextureID.WallWest);
+		LoadTexture("assets/wall_east.png", (uint)TextureID.WallEast);
+		LoadTexture("assets/wall_corner_west.png", (uint)TextureID.WallCornerWest);
+		LoadTexture("assets/wall_corner_east.png", (uint)TextureID.WallCornerEast);
+		// LoadTexture("assets/wall_both_sides.png", 6);
  	}
 
 	/// <summary>
