@@ -5,3 +5,4 @@ dotnet_diagnostic.CA1050.severity = none	# Declare types in namespaces
 dotnet_diagnostic.IDE0047.severity = none	# Parentheses can be removed
 dotnet_diagnostic.IDE0300.severity = none	# Collection initialization can be simplified
 dotnet_diagnostic.IDE0056.severity = none	# Indexing can be simplified
+dotnet_diagnostic.IDE0074.severity = none	# Use compound assignment
