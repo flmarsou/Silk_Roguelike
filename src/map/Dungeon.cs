@@ -4,7 +4,7 @@ public partial class	Dungeon
 	private static readonly int					_mapWidth = 41;			// Horizontal (x) amount of tiles
 	private static readonly int					_mapHeight = 41;		// Vertical (y) amount of tiles
 	private static readonly (int min, int max)	_roomSize = (4, 14);	// Min and Max dimensions for rooms
-	private static readonly int					_roomAttempts = 2;	// Amount of attemps to generate rooms
+	private static readonly int					_roomAttempts = 1000;	// Amount of attemps to generate rooms
 	private static readonly int					_roomPadding = 1;		// Minimum empty tiles required between rooms
 
 	private readonly static Random	_rng = new Random();
@@ -27,8 +27,6 @@ public partial class	Dungeon
 
 		return (map);
 	}
-
-	public static bool	IsInBound(int y, int x)	=>	!(y < 0 || y >= _mapHeight || x < 0 || x >= _mapWidth);
 
 	private static List<Room>	GenerateRooms(Tile[,] map)
 	{

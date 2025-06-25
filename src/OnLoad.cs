@@ -32,7 +32,7 @@ public partial class	Program
 
 	private static unsafe void	OnLoad()
 	{
-		LoadKeyDown();
+		InitInput();
 
 		_gl = GL.GetApi(_window);
 
@@ -54,7 +54,6 @@ public partial class	Program
 		LoadTexture("assets/wall_inner_corner_sw.png", (uint)TextureID.WallInnerCornerSW);
 		LoadTexture("assets/wall_inner_corner_ne.png", (uint)TextureID.WallInnerCornerNE);
 		LoadTexture("assets/wall_inner_corner_nw.png", (uint)TextureID.WallInnerCornerNW);
-		// LoadTexture("assets/wall_both_sides.png", 6);
  	}
 
 	/// <summary>
