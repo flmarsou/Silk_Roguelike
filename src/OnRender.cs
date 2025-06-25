@@ -4,14 +4,30 @@ using Silk.NET.OpenGL;
 public partial class	Program
 {
 	private static Vector2	_cameraPos = Vector2.Zero;
+	private static float	_zoom = 10.0f;
 
+	// ====================================================================== //
+	// ========================== Main Render Loop ========================== //
+	// ====================================================================== //
 	private static unsafe void	OnRender(double deltaTime)
 	{
+		// --- Clear ---
 		_gl.Clear((uint)ClearBufferMask.ColorBufferBit);
 		_gl.ClearColor(0.294f, 0.224f, 0.243f, 1.0f);
+
+		// --- Setup ---
 		_gl.UseProgram(_program);
 		_gl.BindVertexArray(_vao);
 
+		// --- Zoom Handling ---
+		if (_scrollAmount != 0)
+		{
+			_zoom -= _scrollAmount * (float)deltaTime * 100.0f;
+			_zoom = Math.Clamp(_zoom, 1.0f, 50000.0f);
+			_scrollAmount = 0;
+		}
+
+		// --- Draw Map ---
 		int	rows = _map.GetLength(0);
 		int	cols = _map.GetLength(1);
 
@@ -29,14 +45,16 @@ public partial class	Program
 
 				_gl.BindTexture(TextureTarget.Texture2D, texture);
 
-				Matrix4x4	transform = Matrix4x4.CreateTranslation(new Vector3(x, y, 0));
-				SetTransform(transform);
+				SetTransform(Matrix4x4.CreateTranslation(new Vector3(x, y, 0)));
 
 				_gl.DrawElements(PrimitiveType.Triangles, (uint)_indices.Length, DrawElementsType.UnsignedInt, null);
 			}
 		}
 	}
 
+	// ====================================================================== //
+	// =========================== Shader Helpers =========================== //
+	// ====================================================================== //
 	private static unsafe void SetTransform(Matrix4x4 matrix)
 	{
 		Matrix4x4	view = Matrix4x4.CreateTranslation(new Vector3(-_cameraPos, 0));
@@ -59,14 +77,14 @@ public partial class	Program
 	private static unsafe void	SetProjection()
 	{
 		float	aspect = _windowWidth / (float)_windowHeight;
-		float	fixedHeight = 50.0f;
-		float	fixedWidth = fixedHeight * aspect;
+		float	viewHeight = _zoom;
+		float	viewWidth = viewHeight * aspect;
 
 		Matrix4x4	projection = Matrix4x4.CreateOrthographicOffCenter(
-			left: 0.0f,
-			right: fixedWidth,
-			bottom: fixedHeight,
-			top: 0.0f,
+			left: _cameraPos.X - (viewWidth / 2f),
+			right: _cameraPos.X + (viewWidth / 2f),
+			bottom: _cameraPos.Y + (viewHeight / 2f),
+			top: _cameraPos.Y - (viewHeight / 2f),
 			zNearPlane: -1.0f,
 			zFarPlane: 1.0f
 		);
