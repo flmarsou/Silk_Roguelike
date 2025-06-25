@@ -7,7 +7,7 @@ public partial class	Program
 	private static float	_zoom = 10.0f;
 
 	// ====================================================================== //
-	// ========================== Main Render Loop ========================== //
+	//                            Main Render Loop                            //
 	// ====================================================================== //
 	private static unsafe void	OnRender(double deltaTime)
 	{
@@ -23,7 +23,7 @@ public partial class	Program
 		if (_scrollAmount != 0)
 		{
 			_zoom -= _scrollAmount * (float)deltaTime * 100.0f;
-			_zoom = Math.Clamp(_zoom, 1.0f, 50000.0f);
+			_zoom = Math.Clamp(_zoom, 4.99f, _map.GetLength(0));
 			_scrollAmount = 0;
 		}
 
@@ -53,7 +53,7 @@ public partial class	Program
 	}
 
 	// ====================================================================== //
-	// =========================== Shader Helpers =========================== //
+	//                             Shader Helpers                             //
 	// ====================================================================== //
 	private static unsafe void SetTransform(Matrix4x4 matrix)
 	{
