@@ -90,6 +90,26 @@ public partial class	Program
 				_gl.DrawElements(PrimitiveType.Triangles, (uint)_indices.Length, DrawElementsType.UnsignedInt, null);
 			}
 		}
+
+		for (int y = 0; y < rows; y++)
+		{
+			for (int x = 0; x < cols; x++)
+			{
+				if (y == _player.Y && x == _player.X)
+				{
+					SetTransform(Matrix4x4.CreateTranslation(new Vector3(x, y, 0)));
+					_gl.BindTexture(TextureTarget.Texture2D, _textures[(uint)TextureID.DebugGreen]);
+					_gl.DrawElements(PrimitiveType.Triangles, (uint)_indices.Length, DrawElementsType.UnsignedInt, null);
+				}
+
+				if (y == _enemy.Y && x == _enemy.X)
+				{
+					SetTransform(Matrix4x4.CreateTranslation(new Vector3(x, y, 0)));
+					_gl.BindTexture(TextureTarget.Texture2D, _textures[(uint)TextureID.Debug]);
+					_gl.DrawElements(PrimitiveType.Triangles, (uint)_indices.Length, DrawElementsType.UnsignedInt, null);
+				}
+			}
+		}
 	}
 
 	// ====================================================================== //
