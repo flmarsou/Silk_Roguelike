@@ -25,7 +25,17 @@ public partial class	Program
 
 	private static void	KeyDown(IKeyboard keyboard, Key key, int keyCode)
 	{
-
+		if (_state == GameState.Game)
+		{
+			if (key == Key.W)
+				_player.Move(-1, 0, _map);
+			if (key == Key.A)
+				_player.Move(0, -1, _map);
+			if (key == Key.S)
+				_player.Move(1, 0, _map);
+			if (key == Key.D)
+				_player.Move(0, 1, _map);
+		}
 	}
 
 	private static void	Scroll(IMouse mouse, ScrollWheel scroll)
