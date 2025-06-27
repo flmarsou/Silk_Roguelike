@@ -1,6 +1,7 @@
 public enum	TextureID
 {
 	Empty = -1,
+	// Tiles
 	WallNorth,
 	WallSouth,
 	WallWest,
@@ -12,5 +13,10 @@ public enum	TextureID
 	WallInnerCornerNE,
 	WallInnerCornerSE,
 	WallInnerCornerSW,
-	WallInnerCornerNW
+	WallInnerCornerNW,
+	// GUI
+
+	// Debug
+	Debug,
+	DebugGreen
 }
