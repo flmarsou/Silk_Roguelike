@@ -23,7 +23,7 @@ public partial class	Dungeon
 		GenerateDoors(map, rooms);
 		GenerateMisc(map, rooms);
 
-		PrintDungeon(map);
+		// PrintDungeon(map);
 
 		return (map);
 	}
